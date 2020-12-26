@@ -1,0 +1,142 @@
+#!/usr/bin/env bash
+is_build_project=false
+make_pull=false
+binary_name=""
+scheme_name=""
+pull_branch=""
+
+print_help(){
+echo -e "\nUsage: ./run.sh.command [options] <path_to_dir>
+Options:
+-h, --help\t\t: Print this manual
+-b, --build\t\t: Run cmake/mac.sh.command and build project with XCode
+-p, --pull\t\t: Pull current repo branch and update submodules
+\nExample: './run.sh.command -b -p ./repos/MM'\n
+This will pull curent branch of './repos/MM' , update submodules, run 'cmake/mac.sh.command', build project with XCode and run\n"
+}
+
+identify_project(){
+    project_origin=$(git --git-dir=$PROJECT_DIR/.git remote get-url origin)
+    if [[ $project_origin == *"mystery-garden"* ]]
+    then
+        binary_name="MysteryGarden-Dev"
+        scheme_name="MysteryGarden-Dev"
+    elif [[ $project_origin == *"manor-matters"* ]]
+    then
+        binary_name="ManorMatters-Dev"
+        scheme_name="Mansion-Dev"
+    else
+        echo "'$PROJECT_DIR' doesn't contain Manor-Matters or Mystery-Garden project\n"
+        exit
+    fi
+}
+
+pull_repo(){    
+    cd $PROJECT_DIR
+    pull_branch=$(git branch --show-current)
+    echo -e "Pulling origin '$pull_branch' ...\n"
+    git pull origin "$pull_branch";
+    if [[ $? -eq 0 ]]
+    then
+        echo -e "\nBranch '$pull_branch' pulled succesfully\n"
+        echo "Updating submodules"
+        git submodule update --init --recursive;
+        if [ $? -eq 0 ]
+        then
+            echo -e "\nSubmodules succesfully updated\n"
+        else
+            echo -e "\nUpdating submodules failed\n" 
+            exit   
+        fi
+    else
+        echo -e "\nPull '$pull_branch' failed\n"
+        exit
+    fi
+
+}
+
+build_project(){
+    bash $PROJECT_DIR/cmake/mac.sh.command
+    if [ $? -eq 0 ]
+    then
+        build_dir="$PROJECT_DIR/build/mac"
+        if [ -d $build_dir ]
+        then
+            cd $build_dir
+            xcodebuild -verbose -showBuildTimingSummary -jobs $(sysctl -n hw.ncpu) -scheme $scheme_name build
+            if ! [ $? -eq 0 ]
+            then
+                echo -e "\nBuild failed\n"
+                exit
+            fi
+        else
+            echo -e "Build directory '$build_dir' doesn't exist"
+            exit
+        fi
+    else
+        echo -e "\nCMake error\n"
+        exit
+    fi
+}
+
+execute_binary(){
+    binary_path=$(find $PROJECT_DIR -name $binary_name)
+    if [ $? -eq 0 ] && ! [ -z "$binary_path" ]
+    then 
+        run_command="$binary_path --baseDir=$PROJECT_DIR"
+        echo -e "\n\nRunning '$run_command'\n\n"
+        $run_command
+    else
+        echo -e "Binary '$binary_name' doesn't exist"
+    fi
+}
+
+
+if [ $# -eq 0 ]
+then
+    echo "No arguments provided"
+    exit
+fi
+
+for arg in "$@"
+do
+    case $arg in
+        --help|-h)
+            print_help
+            exit
+            ;;
+        --build|-b)
+            echo BUILD
+            is_build_project=true
+            ;;
+        --pull|-p)
+            echo PULL
+            make_pull=true
+            ;;
+        *)
+            if ! [ -d $arg ]
+            then
+                echo "Invalid argument: '$arg'"
+                exit
+            else
+                PROJECT_DIR=$(pwd)/$arg
+                echo "Directory '$PROJECT_DIR'"
+            fi
+            ;;
+    esac
+
+done
+
+identify_project
+
+if [ -z $make_pull ]
+then
+    pull_repo
+fi
+
+if [ -z $is_build_project ]
+then
+    build_project
+fi
+
+execute_binary
