@@ -129,12 +129,12 @@ done
 
 identify_project
 
-if [ -z $make_pull ]
+if $make_pull
 then
     pull_repo
 fi
 
-if [ -z $is_build_project ]
+if $is_build_project
 then
     build_project
 fi
