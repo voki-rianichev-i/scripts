@@ -80,7 +80,7 @@ build_project(){
 }
 
 execute_binary(){
-    binary_path=$(find $PROJECT_DIR -name $binary_name)
+    binary_path=$(find $PROJECT_DIR -path "*/Contents/MacOS/$binary_name")
     if [ $? -eq 0 ] && ! [ -z "$binary_path" ]
     then 
         run_command="$binary_path --baseDir=$PROJECT_DIR"
