@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 is_build_project=false
 make_pull=false
+run_cmake=true
+execute=true
 binary_name=""
 scheme_name=""
 pull_branch=""
@@ -11,8 +13,11 @@ Options:
 -h, --help\t\t: Print this manual
 -b, --build\t\t: Run cmake/mac.sh.command and build project with XCode
 -p, --pull\t\t: Pull current repo branch and update submodules
+--no-cmake\t\t: Don't run CMake on build step
+--no-exec\t\t: Don't execute binary
 \nExample: './run.sh.command -b -p ./repos/MM'\n
-This will pull curent branch of './repos/MM' , update submodules, run 'cmake/mac.sh.command', build project with XCode and run\n"
+This will pull curent branch of './repos/MM' , update submodules,
+run 'cmake/mac.sh.command',build project with XCode and execute the binary.\n"
 }
 
 identify_project(){
@@ -56,7 +61,11 @@ pull_repo(){
 }
 
 build_project(){
-    bash $PROJECT_DIR/cmake/mac.sh.command
+    if $run_cmake
+    then
+        bash $PROJECT_DIR/cmake/mac.sh.command
+    fi
+
     if [ $? -eq 0 ]
     then
         build_dir="$PROJECT_DIR/build/mac"
@@ -113,6 +122,14 @@ do
             echo PULL
             make_pull=true
             ;;
+        --no-cmake)
+            echo NO_CMAKE
+            run_cmake=false
+            ;;
+        --no-exec)
+            echo NO_EXECUTION
+            execute=false
+            ;;
         *)
             if ! [ -d $arg ]
             then
@@ -139,4 +156,7 @@ then
     build_project
 fi
 
-execute_binary
+if $execute
+then
+    execute_binary
+fi
