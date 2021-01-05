@@ -103,6 +103,11 @@ execute_binary(){
 }
 
 
+if [[ $(git rev-parse HEAD) == $(git rev-parse @{u}) ]]
+then
+    printf "\e[1;32mNew update is available,you can update it by running:\n\ncd $(dirname $0); git pull\n\n\e[0m"
+fi
+
 if [ $# -eq 0 ]
 then
     echo "No arguments provided"
