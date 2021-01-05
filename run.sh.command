@@ -89,9 +89,11 @@ build_project(){
 }
 
 execute_binary(){
+    echo "Looking for binary..."
     binary_path=$(find $PROJECT_DIR -path "*/Contents/MacOS/$binary_name")
     if [ $? -eq 0 ] && ! [ -z "$binary_path" ]
     then 
+        Echo "Binary found"
         run_command="$binary_path --baseDir=$PROJECT_DIR"
         echo -e "\n\nRunning '$run_command'\n\n"
         $run_command
@@ -136,7 +138,8 @@ do
                 echo "Invalid argument: '$arg'"
                 exit
             else
-                PROJECT_DIR=$(pwd)/$arg
+                cd $arg
+                PROJECT_DIR=$(pwd)
                 echo "Directory '$PROJECT_DIR'"
             fi
             ;;
