@@ -102,10 +102,10 @@ execute_binary(){
     fi
 }
 
-
-if [[ $(git rev-parse HEAD) == $(git rev-parse @{u}) ]]
+# START
+if [[ $(git -C "$(dirname $0)" rev-parse HEAD) != $(git -C $(dirname $0)/ rev-parse @{u}) ]]
 then
-    printf "\e[1;32mNew update is available,you can update it by running:\n\ncd $(dirname $0); git pull\n\n\e[0m"
+    printf "\e[1;32mNew version of script is available,you can update it by running:\n\ncd $(dirname $0); git pull\n\n\e[0m"
 fi
 
 if [ $# -eq 0 ]
