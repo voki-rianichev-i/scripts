@@ -72,7 +72,7 @@ build_project(){
         if [ -d $build_dir ]
         then
             cd $build_dir
-            xcodebuild -verbose -showBuildTimingSummary -jobs $(sysctl -n hw.ncpu) -scheme $scheme_name build
+            xcodebuild -showBuildTimingSummary -jobs $(sysctl -n hw.ncpu) -scheme $scheme_name build
             if ! [ $? -eq 0 ]
             then
                 echo -e "\nBuild failed\n"
