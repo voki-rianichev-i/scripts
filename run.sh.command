@@ -8,16 +8,16 @@ scheme_name=""
 pull_branch=""
 
 print_help(){
-echo -e "\nUsage: ./run.sh.command [options] <path_to_dir>
-Options:
--h, --help\t\t: Print this manual
--b, --build\t\t: Run cmake/mac.sh.command and build project with XCode
--p, --pull\t\t: Pull current repo branch and update submodules
---no-cmake\t\t: Don't run CMake on build step
---no-exec\t\t: Don't execute binary
-\nExample: './run.sh.command -b -p ./repos/MM'\n
-This will pull curent branch of './repos/MM' , update submodules,
-run 'cmake/mac.sh.command',build project with XCode and execute the binary.\n"
+    echo -e "\nUsage: ./run.sh.command [options] <path_to_dir>
+    Options:
+    -h, --help\t\t: Print this manual
+    -b, --build\t\t: Run cmake/mac.sh.command and build project with XCode
+    -p, --pull\t\t: Pull current repo branch and update submodules
+    --no-cmake\t\t: Don't run CMake before building
+    --no-exec\t\t: Don't execute binary
+    \nExample: './run.sh.command -b -p ./repos/MM'\n
+    This will pull curent branch of './repos/MM' , update submodules,
+    run 'cmake/mac.sh.command',build project with XCode and execute the binary.\n"
 }
 
 identify_project(){
