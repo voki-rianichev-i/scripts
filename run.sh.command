@@ -94,7 +94,7 @@ execute_binary(){
     if [ $? -eq 0 ] && ! [ -z "$binary_path" ]
     then 
         Echo "Binary found"
-        run_command="$binary_path --baseDir=$PROJECT_DIR"
+        run_command="$binary_path --baseDir=$PROJECT_DIR --resolution iPad"
         echo -e "\n\nRunning '$run_command'\n\n"
         $run_command
     else
