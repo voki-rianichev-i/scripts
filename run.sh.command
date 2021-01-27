@@ -161,7 +161,10 @@ fi
 
 if $is_build_project
 then
+    start=`date +%s`
     build_project
+    end=`date +%s`
+    printf "\e[1;32m\nBuild took $(( ($end - $start) / 60 ))  minutes.\n\e[0m"
 fi
 
 if $execute
