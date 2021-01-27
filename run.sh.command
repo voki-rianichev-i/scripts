@@ -7,6 +7,12 @@ binary_name=""
 scheme_name=""
 pull_branch=""
 
+check_update(){
+    if [[ $(git -C $(dirname $0) rev-parse HEAD) != $(git -C $(dirname $0) rev-parse @{u}) ]]
+    then
+        printf "\e[1;32m\nNew version of script is available,you can update it by running:\n\ngit -C $(dirname $0) pull\n\n\e[0m"
+    fi
+}
 print_help(){
     echo -e "\nUsage: ./run.sh.command [options] <path_to_dir>
     Options:
@@ -18,6 +24,7 @@ print_help(){
     \nExample: './run.sh.command -b -p ./repos/MM'\n
     This will pull curent branch of './repos/MM' , update submodules,
     run 'cmake/mac.sh.command',build project with XCode and execute the binary.\n"
+    check_update
 }
 
 identify_project(){
@@ -36,7 +43,7 @@ identify_project(){
     fi
 }
 
-pull_repo(){    
+pull_repo(){
     cd $PROJECT_DIR
     pull_branch=$(git branch --show-current)
     echo -e "Pulling origin '$pull_branch' ...\n"
@@ -103,11 +110,6 @@ execute_binary(){
 }
 
 # START
-if [[ $(git -C "$(dirname $0)" rev-parse HEAD) != $(git -C $(dirname $0)/ rev-parse @{u}) ]]
-then
-    printf "\e[1;32mNew version of script is available,you can update it by running:\n\ncd $(dirname $0); git pull\n\n\e[0m"
-fi
-
 if [ $# -eq 0 ]
 then
     echo "No arguments provided"
@@ -171,3 +173,5 @@ if $execute
 then
     execute_binary
 fi
+
+check_update
