@@ -13,7 +13,7 @@ check_update() {
     fi
 }
 print_help() {
-    echo -e "\nUsage: ./run.sh.command [options] <path_to_dir>
+    echo -e "\nUsage: ./run.sh.command [options] <path_to_any_dir_in_git_repo>
     Options:
     -h, --help\t\t: Print this manual
     -b, --build\t\t: Run cmake/mac.sh.command and build project with XCode
@@ -132,9 +132,16 @@ for arg in "$@"; do
             echo "Invalid argument: '$arg'"
             exit
         else
-            cd $arg
-            PROJECT_DIR=$(pwd)
-            echo "Directory '$PROJECT_DIR'"
+            if [ "$(git -C $arg rev-parse --is-inside-work-tree 2>/dev/null)" == "true" ]; then
+                arg=`git -C $arg rev-parse --show-toplevel`
+                cd $arg
+                PROJECT_DIR=$(pwd)
+                echo "Directory '$PROJECT_DIR'"
+            else
+                cd $arg
+                echo -e "Directory '`pwd`' is not a git repository\n"
+                exit
+            fi
         fi
         ;;
     esac
