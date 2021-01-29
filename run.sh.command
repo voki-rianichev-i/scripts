@@ -35,7 +35,7 @@ identify_project() {
         binary_name="ManorMatters-Dev"
         scheme_name="Mansion-Dev"
     else
-        echo "'$PROJECT_DIR' doesn't contain Manor-Matters or Mystery-Garden project\n"
+        echo -e "'$PROJECT_DIR' doesn't contain Manor-Matters or Mystery-Garden project\n"
         exit
     fi
 }
