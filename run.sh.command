@@ -155,6 +155,7 @@ if $make_pull; then
 fi
 
 if $is_build_project; then
+    printf "\e[1;32mBuild started at `date +%H:%M` \n\e[0m"
     start=$(date +%s)
     build_project
     end=$(date +%s)
