@@ -71,7 +71,7 @@ build_project() {
         build_dir="$PROJECT_DIR/build/mac"
         if [ -d $build_dir ]; then
             cd $build_dir
-            xcodebuild -showBuildTimingSummary -jobs $(sysctl -n hw.ncpu) -scheme $scheme_name build
+            xcodebuild -parallelizeTargets -jobs $(sysctl -n hw.ncpu) -scheme $scheme_name build
             if ! [ $? -eq 0 ]; then
                 echo -e "\nBuild failed\n"
                 exit
