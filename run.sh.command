@@ -160,6 +160,7 @@ if $is_build_project; then
     build_project
     end=$(date +%s)
     printf "\e[1;32m\nBuild took $((($end - $start) / 60))  minutes.\n\e[0m"
+    printf "\e[1;32mBuild ended at `date +%H:%M` \n\e[0m"
 fi
 
 if $execute; then
