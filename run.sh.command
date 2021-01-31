@@ -8,6 +8,7 @@ scheme_name=""
 pull_branch=""
 
 check_update() {
+    git -C `dirname $0` fetch origin 
     if [[ $(git -C $(dirname $0) rev-parse HEAD) != $(git -C $(dirname $0) rev-parse @{u}) ]]; then
         printf "\e[1;32m\nNew version of script is available,you can update it by running:\n\ngit -C $(dirname $0) pull\n\n\e[0m"
     fi
