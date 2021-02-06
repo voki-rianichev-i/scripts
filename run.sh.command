@@ -4,6 +4,7 @@ make_pull=false
 run_cmake=true
 execute=true
 play_sound=false
+build_succeded=false
 binary_name=""
 scheme_name=""
 pull_branch=""
@@ -167,6 +168,7 @@ if $is_build_project; then
     start=$(date +%s)
     color="\e[1;32m" # GREEN
     if build_project; then
+        build_succeded=true
         if $play_sound; then
             say BUILD SUCCEEDED
         fi
@@ -180,7 +182,7 @@ if $is_build_project; then
     printf "$color\nBuild took $((($end - $start) / 60))  minutes.\nBuild ended at `date +%H:%M` \n\e[0m"
 fi
 
-if $execute; then
+if $execute && $build_succeded; then
     execute_binary
 fi
 
