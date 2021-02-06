@@ -3,6 +3,7 @@ is_build_project=false
 make_pull=false
 run_cmake=true
 execute=true
+play_sound=false
 binary_name=""
 scheme_name=""
 pull_branch=""
@@ -19,6 +20,7 @@ print_help() {
     -h, --help\t\t: Print this manual
     -b, --build\t\t: Run cmake/mac.sh.command and build project with XCode
     -p, --pull\t\t: Pull current repo branch and update submodules
+    -s, --sound\t\t: Sound notification then build finished
     --no-cmake\t\t: Don't run CMake before building
     --no-exec\t\t: Don't execute binary
     \nExample: './run.sh.command -b -p ./repos/MM'\n
@@ -74,17 +76,17 @@ build_project() {
             cd $build_dir
             xcodebuild -parallelizeTargets -jobs $(sysctl -n hw.ncpu) -scheme $scheme_name build
             if ! [ $? -eq 0 ]; then
-                echo -e "\nBuild failed\n"
-                exit
+                return 1
             fi
         else
             echo -e "Build directory '$build_dir' doesn't exist"
-            exit
+            return 1
         fi
     else
         echo -e "\nCMake error\n"
-        exit
+        return 1
     fi
+    return 0
 }
 
 execute_binary() {
@@ -119,6 +121,10 @@ for arg in "$@"; do
     --pull | -p)
         echo PULL
         make_pull=true
+        ;;
+    --sound | -s)
+        echo SOUND
+        play_sound=true
         ;;
     --no-cmake)
         echo NO_CMAKE
@@ -158,10 +164,19 @@ fi
 if $is_build_project; then
     printf "\e[1;32mBuild started at `date +%H:%M` \n\e[0m"
     start=$(date +%s)
-    build_project
+    color="\e[1;32m" # GREEN
+    if build_project; then
+        if $play_sound; then
+            say BUILD SUCCEEDED
+        fi
+    else
+        color="\e[1;31m" # RED
+        if $play_sound; then
+            say BUILD FAILED
+        fi
+    fi
     end=$(date +%s)
-    printf "\e[1;32m\nBuild took $((($end - $start) / 60))  minutes.\n\e[0m"
-    printf "\e[1;32mBuild ended at `date +%H:%M` \n\e[0m"
+    printf "$color\nBuild took $((($end - $start) / 60))  minutes.\nBuild ended at `date +%H:%M` \n\e[0m"
 fi
 
 if $execute; then
