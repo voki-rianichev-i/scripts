@@ -4,7 +4,7 @@ make_pull=false
 run_cmake=true
 execute=true
 play_sound=false
-build_succeded=false
+build_succeded=true
 binary_name=""
 scheme_name=""
 pull_branch=""
@@ -173,6 +173,7 @@ if $is_build_project; then
             say BUILD SUCCEEDED
         fi
     else
+        build_succeded=false
         color="\e[1;31m" # RED
         if $play_sound; then
             say BUILD FAILED
