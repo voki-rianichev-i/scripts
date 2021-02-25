@@ -76,7 +76,7 @@ build_project() {
 		build_dir="$PROJECT_DIR/build/mac"
 		if [ -d $build_dir ]; then
 			cd $build_dir
-			xcodebuild -parallelizeTargets -jobs $(sysctl -n hw.ncpu) -scheme $scheme_name build
+			xcodebuild -parallelizeTargets -jobs $(sysctl -n hw.ncpu) -scheme $scheme_name build | egrep '^(/.+:[0-9+:[0-9]+:.(error):|fatal|===)'
 			if ! [ $? -eq 0 ]; then
 				return 1
 			fi
