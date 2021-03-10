@@ -11,7 +11,7 @@ pull_branch=""
 reset=""
 
 check_update() {
-	git -C $(dirname $0) fetch origin
+	git -C $(dirname $0) fetch origin 2>/dev/null 
 	if [[ $(git -C $(dirname $0) rev-parse HEAD) != $(git -C $(dirname $0) rev-parse @{u}) ]]; then
 		printf "\e[1;32m\nNew version of script is available,you can update it by running:\n\ngit -C $(dirname $0) pull\n\n\e[0m"
 		printf "Changes:\n$(git -C $(dirname $0) log --graph --abbrev-commit --date=relative master..origin/master --oneline)"
