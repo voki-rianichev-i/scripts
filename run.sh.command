@@ -8,6 +8,7 @@ build_succeded=true
 binary_name=""
 scheme_name=""
 pull_branch=""
+reset=""
 
 check_update() {
 	git -C $(dirname $0) fetch origin
@@ -23,6 +24,7 @@ print_help() {
     -b, --build\t\t: Run cmake/mac.sh.command and build project with XCode
     -p, --pull\t\t: Pull current repo branch and update submodules
     -s, --sound\t\t: Sound notification then build finished
+	-r, --reset\t\t: Launch game with '--reset' argument
     --no-cmake\t\t: Don't run CMake before building
     --no-exec\t\t: Don't execute binary
     \nExample: './run.sh.command -b -p ./repos/MM'\n
@@ -96,7 +98,7 @@ execute_binary() {
 	binary_path=$(find $PROJECT_DIR -path "*/Contents/MacOS/$binary_name")
 	if [ $? -eq 0 ] && ! [ -z "$binary_path" ]; then
 		Echo "Binary found"
-		run_command="$binary_path --baseDir=$PROJECT_DIR --resolution=iPad"
+		run_command="$binary_path --baseDir=$PROJECT_DIR --resolution=iPad $reset"
 		echo -e "\n\nRunning '$run_command'\n\n"
 		$run_command
 	else
@@ -127,6 +129,10 @@ for arg in "$@"; do
 	--sound | -s)
 		echo SOUND
 		play_sound=true
+		;;
+	--reset | -r)
+		echo RESET
+		reset="--reset"
 		;;
 	--no-cmake)
 		echo NO_CMAKE
