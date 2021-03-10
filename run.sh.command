@@ -24,7 +24,7 @@ print_help() {
     -b, --build\t\t: Run cmake/mac.sh.command and build project with XCode
     -p, --pull\t\t: Pull current repo branch and update submodules
     -s, --sound\t\t: Sound notification then build finished
-	-r, --reset\t\t: Launch game with '--reset' argument
+    -r, --reset\t\t: Launch game with '--reset' argument
     --no-cmake\t\t: Don't run CMake before building
     --no-exec\t\t: Don't execute binary
     \nExample: './run.sh.command -b -p ./repos/MM'\n
